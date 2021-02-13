@@ -1,0 +1,18 @@
+{% extends "main.html" -%}
+{% block title %}Function {{ name }}{% endblock %}
+{% block body -%}
+<div class="d-function">
+{% for member in overloads %}
+    <div class="d-func" id="{{member | definition_name}}-{{loop.index}}">
+        <code class="d-method">
+            {% for qualifier in member["Function"]["declaration"]["qualifiers"] %}{{ qualifier | lower }} {% endfor %}
+            func {{ member | definition_name }}(
+            {%- for param in member["Function"]["parameters"] -%}
+                {{ param["name"] }}: {{ param["type_"] | type_name | link }}
+                {{ ", " if not loop.last else " " }}
+            {%- endfor -%}) -&gt; {{ member | definition_type | link }}
+        </code>
+    </div>
+{% endfor %}
+</div>
+{% endblock -%}

@@ -1,0 +1,11 @@
+{% extends "main.html" %}
+{% block title %}Functions{% endblock %}
+{% block body %}
+<ul>
+{% for definition in definitions -%}
+{% if "Function" in definition -%}
+<li>{{ definition | definition_name | link }}</li>
+{% endif -%}
+{% endfor %}
+</ul>
+{% endblock %}
