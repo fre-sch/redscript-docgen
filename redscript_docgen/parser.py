@@ -79,12 +79,12 @@ enum = r"""
     enum_value       = ~"\d+"a
 """
 
-braced_body = r"""
-    braced           = lbrace _ braced_body* _ rbrace
-    braced_body      = deflist / statement
-    statement        = statement_body statement_term
-    statement_body   = ~"[^;]+"a*
-    statement_term   = ";"
+class_ = r"""
+    class            = class_start _ class_body
+    class_start      = (annotation _)? (qualifierlist ws)? ("class" / "struct") _ ident _
+    class_body       = lbrace _ class_members* _ rbrace
+    class_members    = class_field / func / _
+    class_field      = (qualifierlist ws)? "let" _ ident _ typesep _ type _ ";"
 """
 
 # grammar = Grammar(r"""

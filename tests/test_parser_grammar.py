@@ -385,3 +385,70 @@ def test_func_body_ok(value):
     )
     tree = grammar.parse(value)
     assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "let ident:type;",
+    "let ident: type;",
+    "let ident :type;",
+    "let ident  :  type;",
+    "let ident:type<type>;",
+    "let ident: type<type>;",
+    "let ident :type<type>;",
+    "let ident  :  type<type>;",
+    "private let ident:type;",
+    "private let ident: type;",
+    "public let ident :type;",
+    "protected let ident  :  type;",
+    "public edit let ident:type<type>;",
+    "private edit let ident: type<type>;",
+))
+def test_class_field_ok(value):
+    grammar = Grammar(
+        "start = class_field\n"
+        + parser.class_
+        + parser.annotation
+        + parser.function
+        + parser.params
+        + parser.type_
+        + parser.qualifier
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "public native class ClassName {}",
+    "struct StructName{}",
+    "class ClassName{let ident :type;}",
+    """class ClassName {
+      let ident: type<type<type>>;
+      let ident: type<type<type>>;
+      private func GetIdent() -> type<type<type>> {
+        while true {
+          this.print("foo");
+        }
+      }
+      private func SetIdent(ident: type) -> void {}
+    }"""
+))
+def test_class_field_ok(value):
+    grammar = Grammar(
+        parser.class_
+        + parser.annotation
+        + parser.function
+        + parser.params
+        + parser.type_
+        + parser.qualifier
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+
