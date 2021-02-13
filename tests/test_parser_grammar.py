@@ -228,7 +228,7 @@ def test_param_list_ok(value):
     "(ident: type, ident: type)",
     "( ident: type, ident: type )",
     "(ident: type<type>)",
-    "(ident: type<type>, ident:type<type>)",
+    "(ident: type, ident: type<type>, ident:type<type>)",
     "(ident: type, out ident: type, opt ident:type, ident:type)",
 ))
 def test_parameters_ok(value):
@@ -241,3 +241,147 @@ def test_parameters_ok(value):
     tree = grammar.parse(value)
     assert tree is not None
 
+
+@pytest.mark.parametrize("value", (
+    "IDENT = 1",
+    "IDENT = 123",
+    "IDENT=1",
+    "IDENT=1123",
+))
+def test_enum_decl_ok(value):
+    grammar = Grammar(
+        "start=enum_decl\n"
+        + parser.enum
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "One = 1, Two = 2",
+    "One = 1, Two = 2,"
+    "One=1,Two=2,"
+))
+def test_enum_list_ok(value):
+    grammar = Grammar(
+        "start=enum_list\n"
+        + parser.enum
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "{}",
+    "{ }",
+    "{One = 1}",
+    "{One = 1,}",
+    "{One = 1, Two = 2,}",
+    "{One=1,Two=2,}"
+))
+def test_enum_body_ok(value):
+    grammar = Grammar(
+        "start=enum_body\n"
+        + parser.enum
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "enum ident{}",
+    "enum ident { }",
+    "enum ident {One = 1}",
+    "enum ident {One = 1,}",
+    "enum ident {One = 1, Two = 2,}",
+    "enum ident{One=1,Two=2,}"
+))
+def test_enum_ok(value):
+    grammar = Grammar(
+        "start=enum\n"
+        + parser.enum
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "func Name_Of_Func01",
+    "public func Name_Of_Func01",
+    "public static func Name_Of_Func01",
+    "public static native func Name_Of_Func01",
+    "public static native cb func Name_Of_Func01",
+))
+def test_func_start_ok(value):
+    grammar = Grammar(
+        "start=func_start\n"
+        + parser.annotation
+        + parser.function
+        + parser.params
+        + parser.type_
+        + parser.qualifier
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "func Name_Of_Func01() -> type",
+    "public func Name_Of_Func01(param: type) -> type",
+    "public static func Name_Of_Func01(param: type, out param: ref<type>) -> type",
+    "public static native func Name_Of_Func01(opt a: type, opt b: type) -> type<type<type>>",
+    "public static native cb func Name_Of_Func01(   ) -> void",
+    "@annotation() func name() -> type"
+))
+def test_func_sig_ok(value):
+    grammar = Grammar(
+        "start=func_sig\n"
+        + parser.annotation
+        + parser.function
+        + parser.params
+        + parser.type_
+        + parser.qualifier
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
+
+
+@pytest.mark.parametrize("value", (
+    "{}",
+    "{ }",
+    "{ any thing }",
+    """{ let a: type = func(); let b = obj.func("param") }""",
+    """{ while 1 { print(foo) } }"""
+))
+def test_func_body_ok(value):
+    grammar = Grammar(
+        "start=func_body\n"
+        + parser.annotation
+        + parser.function
+        + parser.params
+        + parser.type_
+        + parser.qualifier
+        + parser.ws
+        + parser.symbols
+        + parser.ident
+    )
+    tree = grammar.parse(value)
+    assert tree is not None
