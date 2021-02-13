@@ -1,0 +1,38 @@
+{% extends "main.html" %}
+
+{% block title %}Class {{ def.name }} {% if def.base %}extends {{ def.base | link }}{% endif %}{% endblock %}
+
+{% block body -%}
+<h2>Class {{ def.name }} {% if def.base %}extends {{ def.base | link }}{% endif %}</h2>
+<div class="d-class">
+<h4>Bases</h4>
+<p>{{ bases | reverse | map("link") | join(", ") }}</p>
+
+<div class="d-body">
+    <h4>Fields</h4>
+    <div class="d-fields ms-3">
+{% for member in def.members | select("is_field") -%}
+    <div id="{{member | definition_name}}-{{loop.index}}" class="d-field">
+        <code class="d-field">
+        {{ member.Field.qualifiers | map("lower") | join(" ") }}
+        let <a class="d-name" href="#{{member | definition_name}}-{{loop.index}}" id="{{member | definition_name}}-{{loop.index}}">{{ member | definition_name }}</a>: {{ member | definition_type | link }}
+        </code>
+    </div>
+{% endfor %}
+    </div>
+    <h4>Methods</h4>
+    <div class="d-methods ms-3">
+{% for member in def.members | select("is_function") -%}
+    <div class="d-method-sig">
+        <span class="d-none">{{ member.Function.declaration.qualifiers | map("lower") | join(" ") }}
+        func </span><a class="d-name" href="#{{member | definition_name}}-{{loop.index}}" id="{{member | definition_name}}-{{loop.index}}">{{ member | definition_name }}</a>(
+        <span class="d-params">
+        {%- for param in member.Function.parameters -%}
+            <var>{{ param.qualifiers | map("lower") | join(" ")}} {{ param.name }}:</var><span>{{ param.type_ | type_name | link }}{{ ", " if not loop.last else " " }}</span>
+            {%- endfor -%}</span>) -&gt; {{ member | definition_type | link }}
+    </div>
+{% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

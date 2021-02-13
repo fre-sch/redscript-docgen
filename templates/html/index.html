@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block title %}Index{% endblock %}
+{% block body %}
+<div class="d-flex">
+<div class="flex-grow-1">
+<h3>Classes</h3>
+<ul>
+{% for definition in definitions|select("is_class") -%}
+<li>{{ definition | definition_name | link }}</li>
+{% endfor -%}
+</ul>
+</div>
+<div class="flex-grow-1">
+<h3>Functions</h3>
+<ul>
+{% for definition in definitions|select("is_function") -%}
+<li>{{ definition | definition_name | link }}</li>
+{% endfor -%}
+</ul>
+</div>
+</div>
+{% endblock %}
