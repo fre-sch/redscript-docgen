@@ -10,6 +10,7 @@ sphinx = "*"
 mkdocs = "*"
 parsimonious = {git = "https://github.com/erikrose/parsimonious.git"}
 pytest = "*"
+arpeggio = "*"
 
 [dev-packages]
 
